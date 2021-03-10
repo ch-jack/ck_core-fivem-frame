@@ -2,6 +2,7 @@ CK_CORE
 
 制作人：JACK
 
+FiveM论坛地址：https://forum.cfx.re/t/release-ck-core-fivem-frame-new-framework/2375824
 ck_core为FiveM游戏框架，此框架旨在为开发者提供简单、高效的开发方式，简化开发流程及缩短编码时间
 （此框架的对比目标为：R星官服）
 
