@@ -1,4 +1,4 @@
-CK_COR
+CK_CORE
 
 制作人：JACK
 
