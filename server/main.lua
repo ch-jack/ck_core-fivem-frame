@@ -17,7 +17,7 @@ AddEventHandler('CK:ClientLogin', function()
 		MySQL.Async.fetchAll('SELECT rolename,money,bank,`group`,onlinetime FROM ck_core WHERE identifier = @identifier', {
 			['@identifier'] = identifier
 		}, function(data)
-			data = tabelstringtotable(data)
+			data = json.decode(data)
 			CPlayer = CK.NewPlayer(source)
 			if #data == 1 then
 				CK.LoadPlayer(CPlayer, source, data)

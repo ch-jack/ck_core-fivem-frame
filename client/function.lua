@@ -15,16 +15,17 @@ end
 
 CK.ClientCfg = json.decode(GetResourceKvpString(CK.ClientKey))
 
-CK.SaveCfg = function(key,value)
-	clientcfg[key] = value
-	SetResourceKvp(CK.ClientKey,json.encode(clientcfg))
+CK.SetCfg = function(key, value)
+	CK.ClientCfg[key] = value
+	SetResourceKvp(CK.ClientKey,json.encode(CK.ClientCfg))
 end
 
 CK.GetCfg = function(key)
-	return clientcfg[key] or 0
+	return CK.ClientCfg[key] or 0
 end
 
 CK.CleanCfg = function()
+	CK.ClientCfg = {}
 	SetResourceKvp(CK.ClientKey,json.encode({}))
 end
 

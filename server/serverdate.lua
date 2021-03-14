@@ -60,7 +60,7 @@ end
 CK.LoadServerDate = function()
 	SetTimeout(5000, function()
 		MySQL.Async.fetchScalar("SELECT ServerDate FROM ck_server WHERE id = @id", { ['@id'] = CKConfig.ServerId}, function (unite)
-			if unite then CK.ServerDate = tabelstringtotable(unite) or {} end
+			if unite then CK.ServerDate = json.decode(unite) or {} end
 			CK.ClearServerDate()
 		end)
 	end)
