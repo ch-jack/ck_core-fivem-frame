@@ -1,3 +1,4 @@
+local PropertyFuncCallBack = {}
 local FirstLoad = false
 
 local function freezePlayer(id, freeze)
@@ -48,17 +49,17 @@ AddEventHandler('CK:PlayerLoad', function()
 		RequestModel(model)
 		Wait(50)
 	end
+
 	freezePlayer(CK.Player.PlayerId,true)
 	SetPlayerModel(CK.Player.PlayerId, model)
 	SetModelAsNoLongerNeeded(model)
 	
-	RequestCollisionAtCoord(159.543, -989.248, 30.0919)
-	SetEntityCoordsNoOffset(CK.Player.PlayerPedId, 159.543, -989.248, 30.0919, false, false, false, true)
-	NetworkResurrectLocalPlayer(159.543, -989.248, 30.0919, 100.0, true, true, false)
+	RequestCollisionAtCoord(CKConfig.SpawnPoint.x, CKConfig.SpawnPoint.y, CKConfig.SpawnPoint.y)
+	SetEntityCoordsNoOffset(PlayerPedId(), CKConfig.SpawnPoint.x, CKConfig.SpawnPoint.y, CKConfig.SpawnPoint.y, false, false, false, true)
+	NetworkResurrectLocalPlayer(CKConfig.SpawnPoint.x, CKConfig.SpawnPoint.y, CKConfig.SpawnPoint.y, CKConfig.SpawnPoint.x, CKConfig.SpawnPoint.y, CKConfig.SpawnPoint.h, true, true, false)
 
-	CK.Player.UpdatePedId()
-	SetPedDefaultComponentVariation(CK.Player.PlayerPedId)
-	-- while not HasCollisionLoadedAroundEntity(CK.Player.PlayerPedId) do-- 很慢待优化
+	SetPedDefaultComponentVariation(PlayerPedId())
+	-- while not HasCollisionLoadedAroundEntity(PlayerPedId()) do-- 很慢待优化
 		-- Citizen.Wait(50)
 	-- end
 
@@ -67,13 +68,19 @@ AddEventHandler('CK:PlayerLoad', function()
 	while IsScreenFadingIn() do
 		Citizen.Wait(50)
 	end
+
 	freezePlayer(CK.Player.PlayerId,false)
 	ShutdownLoadingScreenNui()
 	Wait(500)
 	while not FirstLoad do
 		Wait(50)
 	end
+
 	TriggerEvent('CK:HasPlayerLoad')
+end)
+
+AddEventHandler('CK:RegisterPropChange', function(key, func)
+	PropertyFuncCallBack[key] = func
 end)
 
 AddEventHandler('CK:PropertyChanged', function(data)
@@ -81,6 +88,12 @@ AddEventHandler('CK:PropertyChanged', function(data)
 		Wait(500)
 	end
 	CK.Player.PropertyChanged(data)
-	TriggerEvent('CK:HasPlayerHasLoad')
+	for k in pairs(data) do
+		if PropertyFuncCallBack[k] ~= undef then
+			PropertyFuncCallBack[k]()
+		end
+	end
 	if not FirstLoad then FirstLoad = true end
 end)
+
+

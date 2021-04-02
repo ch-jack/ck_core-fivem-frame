@@ -12,6 +12,10 @@ CREATE TABLE `ck_core` (
   `logintime` timestamp NOT NULL,-- 加入时间
   `onlinetime` TinyText COLLATE utf8mb4_bin DEFAULT NULL,-- 在线时间
   
+  `plytempdata` longtext COLLATE utf8mb4_bin DEFAULT NULL,-- 玩家临时数据
+  `plydata` longtext COLLATE utf8mb4_bin DEFAULT NULL,-- 玩家数据
+  `plycfg` longtext COLLATE utf8mb4_bin DEFAULT NULL,-- 玩家选项设置数据
+
   PRIMARY KEY (`identifier`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 

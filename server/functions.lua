@@ -6,6 +6,9 @@ CK.SetObj = function(key, value)
 end
 
 CK.GetObj = function(key)
+	if CK.data[key] == undef then
+		print("Error, CK Get Null Obj:"..key)
+	end
 	return CK.data[key]
 end
 
@@ -68,7 +71,25 @@ CK.Save = function()
 		if NotOnline then
 			v.LogOutNum = v.LogOutNum + 1
 			if v.LogOutNum > 3 then
-				CK.Players[k] = nil
+				CK.Players[k] = undef
+			end
+		end
+	end
+end
+
+CK.CPlayerOnlineTime = function()
+	local OnlinePlayers = GetPlayers()
+	for k,v in pairs(CK.Players) do -- k=source v=CPlayer
+		for _,OP in pairs(OnlinePlayers) do -- OP=source
+			if tonumber(k) ==  tonumber(OP) then
+				local OlTime = v.GetObj("onlinetime")
+				OlTime.m = OlTime.m + 1
+				if OlTime.m == 60 then
+					OlTime.m = 0
+					OlTime.h = OlTime.h + 1
+				end
+				v.SetObj("onlinetime", OlTime)
+				break
 			end
 		end
 	end
@@ -95,5 +116,3 @@ CK.Guid = function()
 	end
     return uid
 end
-
-

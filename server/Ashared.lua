@@ -8,7 +8,7 @@ AddEventHandler('CK:GetCoreObject', function(cb)
 	cb(GetCoreObject())
 end)
 
-local Perfect_World = [[^2 
+local Perfect_World <const> = [[^2 
  _____   _   _         _____   _____   _____    _____        _____   _____   _____       ___  
 /  ___| | | / /       /  ___| /  _  \ |  _  \  | ____|      |  _  \ | ____| |_   _|     /   | 
 | |     | |/ /        | |     | | | | | |_| |  | |__        | |_| | | |__     | |      / /| | 

@@ -12,18 +12,26 @@ AddEventHandler('CK:ClientLogin', function()
 		CPlayer.SendData("CK:PlayerLoad")
 		CPlayer.PropertyChanged()
 		CPlayer.LogOutNum = 0
+		MySQL.Async.execute('UPDATE ck_core SET `logintime` = NOW(),name = @name WHERE identifier = @identifier;', {
+			['@identifier'] = CPlayer.identifier,
+			['@name'] = CPlayer.name,
+		}, function(e) end)
 		TriggerEvent('CK:HasPlayerLoad', CPlayer)
 	else
-		MySQL.Async.fetchAll('SELECT rolename,money,bank,`group`,onlinetime FROM ck_core WHERE identifier = @identifier', {
+		MySQL.Async.fetchAll('SELECT rolename,money,bank,`group`,onlinetime,plytempdata,plydata FROM ck_core WHERE identifier = @identifier;', {
 			['@identifier'] = identifier
 		}, function(data)
 			data = json.decode(data)
 			CPlayer = CK.NewPlayer(source)
 			if #data == 1 then
-				CK.LoadPlayer(CPlayer, source, data)
+				CK.LoadPlayer(CPlayer, source, data[1])
+				MySQL.Async.execute('UPDATE ck_core SET `logintime` = NOW(),name = @name WHERE identifier = @identifier;', {
+					['@identifier'] = CPlayer.identifier,
+					['@name'] = CPlayer.name,
+				}, function(e) end)
 			else
 				CK.LoadPlayer(CPlayer, source, {rolename = GetRandomName()})
-				MySQL.Async.execute('INSERT INTO ck_core(`identifier`, `name`, `rolename`, `ip`, `createtime`, `logintime`) VALUES (@identifier, @name, @rolename, @ip, NOW(), NOW());', {identifier = CPlayer.identifier, name = CPlayer.name, rolename = CPlayer.rolename, ip = GetPlayerEP(source)}, function(e)	end)
+				MySQL.Async.execute('INSERT INTO ck_core(`identifier`, `name`, `rolename`, `ip`, `createtime`, `logintime`) VALUES (@identifier, @name, @rolename, @ip, NOW(), NOW());', {['@identifier'] = CPlayer.identifier, ['@name'] = CPlayer.name, ['@rolename'] = CPlayer.rolename, ['@ip'] = GetPlayerEP(source)}, function(e)	end)
 			end
 			CK.Players[source] = CPlayer
 			CPlayer.SendData("CK:PlayerLoad")
@@ -54,6 +62,10 @@ AddEventHandler('EveryTenMinutes', function()
 	CK.Save()
 end)
 
+AddEventHandler('EveryMinutes', function()
+	CK.CPlayerOnlineTime()
+end)
+
 AddEventHandler("playerDropped", function(reason)
 	local source = source
 	local CPlayer = CK.GetPlayerFromId(source)
@@ -64,6 +76,9 @@ end)
 
 AddEventHandler('ServerStop', function()
 	CK.SaveServerSql()
+	for k,v in pairs(CK.Players) do
+		DropPlayer(k, GetConvar(CKConfig.ServerName, "服务器重启更新，请稍后尝试登录")) 
+	end
 	Citizen.CreateThread(function()
 		Wait(2500)
 		print("^2"..GetCurrentResourceName().." Is Save Can Stop!")

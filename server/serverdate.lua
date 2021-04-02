@@ -3,11 +3,11 @@ CK.ServerDate = {}
 CK.SaveDaily = false
 
 CK.SetServerDate = function(key,value,day)
-	if day == nil then day = 1 end
-	if CK.ServerDate[key] == nil then CK.ServerDate[key] = {} end
-	if CK.ServerDate[key].time ~= nil then
+	if day == undef then day = 1 end
+	if CK.ServerDate[key] == undef then CK.ServerDate[key] = {} end
+	if CK.ServerDate[key].time ~= undef then
 		if NumberOfDaysInterval(os.time(),CK.ServerDate[key].time) >= CK.ServerDate[key].day then
-			CK.ServerDate[key] = nil
+			CK.ServerDate[key] = undef
 			CK.ServerDate[key] = {value = value,day = day,time = os.time()}
 			SaveDaily = true
 			return false
@@ -27,11 +27,11 @@ CK.SetServerDate = function(key,value,day)
 end
 
 CK.GetServerDate = function(key)
-	if CK.ServerDate[key] == nil then 
+	if CK.ServerDate[key] == undef then 
 		return 0
 	else
 		if NumberOfDaysInterval(os.time(),CK.ServerDate[key].time) >= CK.ServerDate[key].day then
-			CK.ServerDate[key] = nil
+			CK.ServerDate[key] = undef
 			SaveDaily = true
 			return 0
 		end

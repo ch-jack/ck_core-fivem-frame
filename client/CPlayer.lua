@@ -8,16 +8,15 @@ CK.NewPlayer = function()
 	end
 
 	self.GetObj = function(k)
-		return self[k] or 0
+		if self[k] == undef then
+			print("^1Error CPlayer Get Null Obj:"..k.."^0")
+		end
+		return self[k]
 	end
-
-	self.PlayerId = PlayerId()
-	self.PlayerPedId = PlayerPedId()
-	self.ServerId = GetPlayerServerId(self.PlayerId)
 	
-	self.UpdatePedId = function()
-		self.PlayerPedId = PlayerPedId()
-	end
+	self.PlayerId = PlayerId()
+	self.Name = GetPlayerName(self.PlayerId)
+	self.ServerId = GetPlayerServerId(self.PlayerId)
 
 	self.PropertyChanged = function(data)
 		for k,v in pairs(data) do
